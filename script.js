@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       expires = "; expires=" + date.toUTCString();
     }
     document.cookie =
-      name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+      name + "=" + (value || "") + expires + "; SameSite=Lax; Secure";
   }
 
   /**
