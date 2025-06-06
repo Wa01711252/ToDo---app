@@ -184,33 +184,45 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- 5. イベントリスナーの設定 ---
+  // (変更) 各要素が存在するかチェックしてからイベントリスナーを設定するように修正
   function initializeEventListeners() {
-    addTaskButton.addEventListener("click", addTask);
-
-    taskInput.addEventListener("keypress", (event) => {
-      if (event.key === "Enter") {
-        addTask();
-      }
-    });
-
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        filterButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
-        currentFilter = button.dataset.filter;
-        renderTasks();
+    // taskInput がページに存在する場合のみイベントリスナーを設定
+    if (taskInput) {
+      taskInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          addTask();
+        }
       });
-    });
+    }
 
-    // (改良) 「削除時確認」スイッチのイベントリスナー
-    confirmSwitch.addEventListener("change", function () {
-      shouldConfirmDeletion = this.checked;
-      // (変更) Cookieに設定を保存
-      setCookie("shouldConfirmDeletion", this.checked, 365);
-      console.log(
-        `削除時の確認が ${this.checked ? "有効" : "無効"} になりました。`
-      );
-    });
+    // addTaskButton がページに存在する場合のみイベントリスナーを設定
+    if (addTaskButton) {
+      addTaskButton.addEventListener("click", addTask);
+    }
+
+    // filterButtons が存在する場合のみイベントリスナーを設定
+    // forEachは要素が0件でもエラーにならないので、if文は必須ではないですが、明確にするために書いてもOKです。
+    if (filterButtons.length > 0) {
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+          currentFilter = button.dataset.filter;
+          renderTasks(); // renderTasksは存在しない要素を操作しないので安全
+        });
+      });
+    }
+
+    // confirmSwitch がページに存在する場合のみイベントリスナーを設定 (エラーの直接の原因)
+    if (confirmSwitch) {
+      confirmSwitch.addEventListener("change", function () {
+        shouldConfirmDeletion = this.checked;
+        setCookie("shouldConfirmDeletion", this.checked, 365);
+        console.log(
+          `削除時の確認が ${this.checked ? "有効" : "無効"} になりました。`
+        );
+      });
+    }
   }
 
   // --- 6. アプリケーションの初期化 ---
