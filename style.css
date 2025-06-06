@@ -299,7 +299,7 @@ input:checked + .slider:before {
 }
 
 .notes .memos li {
-  margin-bottom: 8px; /* (追加) リスト項目間の余白 */
+  margin-bottom: 20px; /* (追加) リスト項目間の余白 */
 }
 
 footer {
