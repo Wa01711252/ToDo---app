@@ -1,26 +1,16 @@
 // =================================================================
-// ToDoリスト & サイト共通スクリプト
+// ToDoリスト & サイト共通スクリプト (最終修正版)
 // =================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  // -----------------------------------------------------------------
-  // ToDoアプリのロジック
-  // -----------------------------------------------------------------
+(function () {
+  "use strict";
 
-  // --- 1. DOM要素の取得 ---
-  const taskInput = document.getElementById("taskInput");
-  const addTaskButton = document.getElementById("addTaskButton");
-  const taskList = document.getElementById("taskList");
-  const filterButtons = document.querySelectorAll(".filter-btn");
-  const confirmSwitch = document.getElementById("confirmSwitch");
-  const addPositionSwitch = document.getElementById("addPositionSwitch");
-
-  // --- 2. アプリケーションの状態管理 ---
-  let todos = JSON.parse(localStorage.getItem("todos")) || [];
+  // --- グローバルな状態管理変数 ---
+  let todos = [];
   let currentFilter = "all";
   let shouldConfirmDeletion = false;
-  let isPrependMode = true;
+  let isPrependMode = true; // デフォルトは先頭追加(true)
 
-  // --- 3. Cookie操作ヘルパー関数 ---
+  // --- Cookie操作ヘルパー関数 ---
   function setCookie(name, value, days) {
     let expires = "";
     if (days) {
@@ -43,15 +33,40 @@ document.addEventListener("DOMContentLoaded", () => {
     return null;
   }
 
-  // --- 4. 主要な関数 ---
+  // --- 設定の読み込みと状態変数への反映 ---
+  function loadSettings() {
+    // 削除確認の設定
+    shouldConfirmDeletion = getCookie("shouldConfirmDeletion") === "true";
+
+    // 追加位置の設定 (Cookieが'false'の時だけfalse、それ以外はデフォルトのtrue)
+    isPrependMode = getCookie("isPrependMode") !== "false";
+  }
+
+  // --- 状態変数に基づいてDOMの表示を更新 ---
+  function applySettingsToDOM() {
+    const confirmSwitch = document.getElementById("confirmSwitch");
+    if (confirmSwitch) {
+      confirmSwitch.checked = shouldConfirmDeletion;
+    }
+
+    const addPositionSwitch = document.getElementById("addPositionSwitch");
+    if (addPositionSwitch) {
+      addPositionSwitch.checked = isPrependMode;
+    }
+  }
+
+  // --- ToDoリスト関連の関数 ---
   function renderTasks() {
+    const taskList = document.getElementById("taskList");
     if (!taskList) return;
+
     taskList.innerHTML = "";
     const filteredTodos = todos.filter((todo) => {
       if (currentFilter === "active") return !todo.completed;
       if (currentFilter === "completed") return todo.completed;
       return true;
     });
+
     if (filteredTodos.length === 0) {
       const emptyMessage = document.createElement("li");
       emptyMessage.classList.add("empty-message");
@@ -89,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
         taskList.appendChild(li);
       });
     }
-    saveTasksToLocalStorage();
   }
 
   function saveTasksToLocalStorage() {
@@ -97,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function addTask() {
+    const taskInput = document.getElementById("taskInput");
     if (!taskInput) return;
     const taskText = taskInput.value.trim();
     if (taskText === "") {
@@ -112,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     taskInput.value = "";
     taskInput.focus();
     renderTasks();
+    saveTasksToLocalStorage();
   }
 
   function toggleTaskComplete(id) {
@@ -119,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     renderTasks();
+    saveTasksToLocalStorage();
   }
 
   function deleteTask(id) {
@@ -130,6 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     todos = todos.filter((todo) => todo.id !== id);
     renderTasks();
+    saveTasksToLocalStorage();
   }
 
   async function copyTextToClipboard(text) {
@@ -142,31 +160,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function loadSettings() {
-    // 削除時確認の設定
-    const confirmationSetting = getCookie("shouldConfirmDeletion");
-    shouldConfirmDeletion = confirmationSetting === "true";
+  // --- イベントリスナーをセットアップする関数 ---
+  function setupEventListeners() {
+    // 設定スイッチ
+    const confirmSwitch = document.getElementById("confirmSwitch");
     if (confirmSwitch) {
-      confirmSwitch.checked = shouldConfirmDeletion;
+      confirmSwitch.addEventListener("change", function () {
+        shouldConfirmDeletion = this.checked;
+        setCookie("shouldConfirmDeletion", this.checked, 365);
+      });
     }
-    // タスク追加位置の設定
-    const addPositionSetting = getCookie("isPrependMode");
-    isPrependMode = addPositionSetting !== "false";
+    const addPositionSwitch = document.getElementById("addPositionSwitch");
     if (addPositionSwitch) {
-      addPositionSwitch.checked = isPrependMode;
+      addPositionSwitch.addEventListener("change", function () {
+        isPrependMode = this.checked;
+        setCookie("isPrependMode", this.checked, 365);
+      });
     }
-  }
 
-  // --- 5. イベントリスナーの設定 ---
-  function initializeTodoEventListeners() {
+    // ハンバーガーメニュー
+    const hamburger = document.querySelector(".fa-bars");
+    const closeMenu = document.querySelector(".fa-xmark");
+    if (hamburger && closeMenu) {
+      const body = document.body;
+      hamburger.addEventListener("click", () => body.classList.add("nav-open"));
+      closeMenu.addEventListener("click", () =>
+        body.classList.remove("nav-open")
+      );
+    }
+
+    // ToDoリスト関連のリスナー
+    const taskInput = document.getElementById("taskInput");
     if (taskInput) {
       taskInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") addTask();
       });
     }
+    const addTaskButton = document.getElementById("addTaskButton");
     if (addTaskButton) {
       addTaskButton.addEventListener("click", addTask);
     }
+    const filterButtons = document.querySelectorAll(".filter-btn");
     if (filterButtons.length > 0) {
       filterButtons.forEach((button) => {
         button.addEventListener("click", () => {
@@ -177,18 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     }
-    if (confirmSwitch) {
-      confirmSwitch.addEventListener("change", function () {
-        shouldConfirmDeletion = this.checked;
-        setCookie("shouldConfirmDeletion", this.checked, 365);
-      });
-    }
-    if (addPositionSwitch) {
-      addPositionSwitch.addEventListener("change", function () {
-        isPrependMode = this.checked;
-        setCookie("isPrependMode", this.checked, 365);
-      });
-    }
+    const taskList = document.getElementById("taskList");
     if (taskList) {
       let draggingElm = null;
       taskList.addEventListener("dragstart", (e) => {
@@ -205,17 +228,15 @@ document.addEventListener("DOMContentLoaded", () => {
           !target ||
           target === draggingElm ||
           target.classList.contains("empty-message")
-        ) {
+        )
           return;
-        }
         e.dataTransfer.dropEffect = "move";
         const rect = target.getBoundingClientRect();
         const isAfter = e.clientY - rect.top > rect.height / 2;
-        if (isAfter) {
-          target.parentNode.insertBefore(draggingElm, target.nextSibling);
-        } else {
-          target.parentNode.insertBefore(draggingElm, target);
-        }
+        target.parentNode.insertBefore(
+          draggingElm,
+          isAfter ? target.nextSibling : target
+        );
       });
       taskList.addEventListener("dragend", () => {
         if (draggingElm) {
@@ -233,31 +254,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- 6. アプリケーションの初期化 ---
-  function initializeTodoApp() {
+  // --- メインの初期化処理 ---
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1. ローカルストレージからToDoデータを読み込む
+    todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+    // 2. Cookieから設定値を読み込み、内部の状態変数を更新する
     loadSettings();
-    initializeTodoEventListeners();
+
+    // 3. 内部の状態変数に基づいて、画面のスイッチなどの表示を更新する
+    applySettingsToDOM();
+
+    // 4. すべてのイベントリスナーを設定する
+    setupEventListeners();
+
+    // 5. ToDoリストを初期描画する
     renderTasks();
-  }
-
-  // ToDoアプリを初期化
-  initializeTodoApp();
-
-  // -----------------------------------------------------------------
-  // ハンバーガーメニューのロジック
-  // -----------------------------------------------------------------
-
-  const hamburger = document.querySelector(".fa-bars");
-  const closeMenu = document.querySelector(".fa-xmark");
-  const body = document.body;
-
-  if (hamburger && closeMenu) {
-    hamburger.addEventListener("click", () => {
-      body.classList.add("nav-open");
-    });
-
-    closeMenu.addEventListener("click", () => {
-      body.classList.remove("nav-open");
-    });
-  }
-});
+  });
+})();
