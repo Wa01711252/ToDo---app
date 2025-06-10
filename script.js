@@ -1,5 +1,5 @@
 // =================================================================
-// ToDoリスト & サイト共通スクリプト (最終修正版)
+// ToDoリスト & サイト共通スクリプト (localStorage版)
 // =================================================================
 (function () {
   "use strict";
@@ -8,65 +8,55 @@
   let todos = [];
   let currentFilter = "all";
   let shouldConfirmDeletion = false;
-  let isPrependMode = true; // デフォルトは先頭追加(true)
+  let isPrependMode = true;
 
-  // --- Cookie操作ヘルパー関数 ---
-  function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie =
-      name + "=" + (value || "") + expires + "; path=/; SameSite=Lax; Secure";
-  }
+  // --- 設定の読み込みと適用 (localStorageから) ---
+  function loadAndApplySettings() {
+    const settings = JSON.parse(localStorage.getItem("todoAppSettings")) || {};
 
-  function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(";");
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === " ") c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  }
+    // 状態変数に値を設定 (値がなければデフォルト値)
+    shouldConfirmDeletion = settings.shouldConfirmDeletion === true; // デフォルトはfalse
+    isPrependMode = settings.isPrependMode !== false; // デフォルトはtrue
 
-  // --- 設定の読み込みと状態変数への反映 ---
-  function loadSettings() {
-    // 削除確認の設定
-    shouldConfirmDeletion = getCookie("shouldConfirmDeletion") === "true";
-
-    // 追加位置の設定 (Cookieが'false'の時だけfalse、それ以外はデフォルトのtrue)
-    isPrependMode = getCookie("isPrependMode") !== "false";
-  }
-
-  // --- 状態変数に基づいてDOMの表示を更新 ---
-  function applySettingsToDOM() {
+    // DOMに値を反映
     const confirmSwitch = document.getElementById("confirmSwitch");
     if (confirmSwitch) {
       confirmSwitch.checked = shouldConfirmDeletion;
     }
-
     const addPositionSwitch = document.getElementById("addPositionSwitch");
     if (addPositionSwitch) {
       addPositionSwitch.checked = isPrependMode;
     }
   }
 
+  // --- 設定の保存 (localStorageへ) ---
+  function saveSettings() {
+    const confirmSwitch = document.getElementById("confirmSwitch");
+    const addPositionSwitch = document.getElementById("addPositionSwitch");
+
+    // スイッチが存在する場合のみ、その値を取得
+    const settings = {
+      shouldConfirmDeletion: confirmSwitch
+        ? confirmSwitch.checked
+        : shouldConfirmDeletion,
+      isPrependMode: addPositionSwitch
+        ? addPositionSwitch.checked
+        : isPrependMode,
+    };
+
+    localStorage.setItem("todoAppSettings", JSON.stringify(settings));
+  }
+
   // --- ToDoリスト関連の関数 ---
   function renderTasks() {
     const taskList = document.getElementById("taskList");
     if (!taskList) return;
-
     taskList.innerHTML = "";
     const filteredTodos = todos.filter((todo) => {
       if (currentFilter === "active") return !todo.completed;
       if (currentFilter === "completed") return todo.completed;
       return true;
     });
-
     if (filteredTodos.length === 0) {
       const emptyMessage = document.createElement("li");
       emptyMessage.classList.add("empty-message");
@@ -162,20 +152,14 @@
 
   // --- イベントリスナーをセットアップする関数 ---
   function setupEventListeners() {
-    // 設定スイッチ
+    // 設定スイッチ (変更があったらlocalStorageに保存)
     const confirmSwitch = document.getElementById("confirmSwitch");
     if (confirmSwitch) {
-      confirmSwitch.addEventListener("change", function () {
-        shouldConfirmDeletion = this.checked;
-        setCookie("shouldConfirmDeletion", this.checked, 365);
-      });
+      confirmSwitch.addEventListener("change", saveSettings);
     }
     const addPositionSwitch = document.getElementById("addPositionSwitch");
     if (addPositionSwitch) {
-      addPositionSwitch.addEventListener("change", function () {
-        isPrependMode = this.checked;
-        setCookie("isPrependMode", this.checked, 365);
-      });
+      addPositionSwitch.addEventListener("change", saveSettings);
     }
 
     // ハンバーガーメニュー
@@ -256,19 +240,16 @@
 
   // --- メインの初期化処理 ---
   document.addEventListener("DOMContentLoaded", () => {
-    // 1. ローカルストレージからToDoデータを読み込む
+    // 1. ToDoリストのデータを読み込む
     todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-    // 2. Cookieから設定値を読み込み、内部の状態変数を更新する
-    loadSettings();
+    // 2. 設定を読み込み、DOMに反映する
+    loadAndApplySettings();
 
-    // 3. 内部の状態変数に基づいて、画面のスイッチなどの表示を更新する
-    applySettingsToDOM();
-
-    // 4. すべてのイベントリスナーを設定する
+    // 3. イベントリスナーを設定する
     setupEventListeners();
 
-    // 5. ToDoリストを初期描画する
+    // 4. ToDoリストを初期描画する
     renderTasks();
   });
 })();
