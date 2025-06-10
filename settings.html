@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ToDoリスト</title>
+    <title>設定 - ToDoリスト</title>
     <link rel="icon" href="images/favicon.png" type="image/png" />
     <link
       rel="apple-touch-icon"
@@ -24,7 +24,7 @@
         <ul>
           <li><a href="index.html">TOP</a></li>
           <li><a href="memos.html">MEMOS</a></li>
-          <li><a href="settings.html">SETTINGS</a></li>
+          <li><a href="settings.html" class="active">SETTINGS</a></li>
         </ul>
       </nav>
       <i class="fa-solid fa-bars"></i>
@@ -35,27 +35,24 @@
       <!-- 広告 -->
       <script src="https://adm.shinobi.jp/o/aaef1b3a893c3135e409554dd18c37eb"></script>
 
-      <section class="settings">
+      <div class="settings">
         <h2>設定</h2>
-        <div>
-          <label for="confirmSwitch" class="switch-label"
-            >削除時の確認を行う</label
-          >
-          <label class="switch">
-            <input type="checkbox" id="confirmSwitch" />
-            <span class="slider round"></span>
-          </label>
+        <div class="setting-item">
+          <label for="confirmSwitch">削除時に確認する</label>
+          <input type="checkbox" id="confirmSwitch" />
         </div>
-      </section>
+        <div class="setting-item">
+          <label for="addPositionSwitch">新しいタスクを先頭に追加する</label>
+          <input type="checkbox" id="addPositionSwitch" />
+        </div>
+      </div>
 
       <!-- 広告 -->
       <script src="https://adm.shinobi.jp/o/aaef1b3a893c3135e409554dd18c37eb"></script>
     </main>
 
     <footer>
-      <div>
-        <p>© 2025 Wasei Maeda</p>
-      </div>
+      <p>© 2025 Wasei Maeda</p>
     </footer>
 
     <script src="script.js"></script>

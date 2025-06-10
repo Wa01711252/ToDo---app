@@ -16,13 +16,12 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
   </head>
-
   <body>
     <header>
       <h1>ToDo</h1>
       <nav>
         <ul>
-          <li><a href="#">TOP</a></li>
+          <li><a href="index.html" class="active">TOP</a></li>
           <li><a href="memos.html">MEMOS</a></li>
           <li><a href="settings.html">SETTINGS</a></li>
         </ul>
@@ -32,52 +31,25 @@
     </header>
 
     <main>
-      <!-- 広告 -->
-      <script src="https://adm.shinobi.jp/o/aaef1b3a893c3135e409554dd18c37eb"></script>
-
       <div class="container">
-        <h2>ToDoリスト</h2>
+        <h2>ToDo List</h2>
         <div class="input-area">
-          <input
-            type="text"
-            id="taskInput"
-            placeholder="新しいタスクを入力..."
-          />
+          <input type="text" id="taskInput" placeholder="新しいタスクを入力" />
           <button id="addTaskButton">追加</button>
         </div>
-
         <div class="filter-area">
-          <button data-filter="all" class="filter-btn active">すべて</button>
-          <button data-filter="active" class="filter-btn">未完了</button>
-          <button data-filter="completed" class="filter-btn">完了済み</button>
+          <button class="filter-btn active" data-filter="all">すべて</button>
+          <button class="filter-btn" data-filter="active">未完了</button>
+          <button class="filter-btn" data-filter="completed">完了</button>
         </div>
-
         <ul id="taskList">
-          <!-- タスクはここに表示されます -->
+          <!-- タスクはここにJavaScriptで追加されます -->
         </ul>
       </div>
-
-      <section class="hidden">
-        <h2>設定</h2>
-        <div>
-          <label for="confirmSwitch" class="switch-label"
-            >削除時の確認を行う</label
-          >
-          <label class="switch">
-            <input type="checkbox" id="confirmSwitch" />
-            <span class="slider round"></span>
-          </label>
-        </div>
-      </section>
-
-      <!-- 広告 -->
-      <script src="https://adm.shinobi.jp/o/aaef1b3a893c3135e409554dd18c37eb"></script>
     </main>
 
     <footer>
-      <div>
-        <p>© 2025 Wasei Maeda</p>
-      </div>
+      <p>© 2025 Wasei Maeda</p>
     </footer>
 
     <script src="script.js"></script>

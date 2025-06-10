@@ -1,49 +1,67 @@
 /* --- 基本設定と構造 --- */
-
 body {
   font-family: "Arial", sans-serif;
-  background-color: #f4f7f6; /* (変更) 少し柔らかい背景色に変更 */
-  margin: 0; /* (変更) bodyのデフォルトmarginをリセット */
+  background-color: #f4f7f6;
+  margin: 0;
   padding: 0;
+  color: #333; /* 基本の文字色を設定 */
 }
 
-/* (追加) main要素にレイアウト設定を移管し、ヘッダーとの重複を避けるpaddingを追加 */
+/* メインコンテンツエリアの共通設定 */
 main {
+  padding: 80px 20px 40px; /* 上(ヘッダー分)・左右・下 の余白 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px; /* (変更) gapを少し調整 */
-  padding: 80px 20px 40px 20px; /* (重要変更) 上部に固定ヘッダー分の余白(60px + α)を確保 */
+  gap: 30px;
+}
+
+/* 各ページのコンテンツコンテナの共通スタイル */
+.container,
+.settings,
+.notes {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
   box-sizing: border-box;
+}
+
+/* 各コンテナ内の見出しの共通スタイル */
+.container h2,
+.settings h2,
+.notes h2 {
+  text-align: center;
+  color: #4c4c4c;
+  margin-top: 0;
+  margin-bottom: 25px;
 }
 
 /* --- ヘッダーとナビゲーション --- */
-
 header {
   position: fixed;
-  top: 0; /* (変更) 画面最上部に配置 */
+  top: 0;
   left: 0;
-  width: 100%; /* (変更) 全幅に広げる */
+  width: 100%;
   height: 60px;
   display: flex;
-  justify-content: space-between; /* (変更) 要素を両端に配置 */
+  justify-content: space-between;
   align-items: center;
   background-color: #29a2c6;
-  padding: 0 20px; /* (変更) 左右に余白を追加 */
+  padding: 0 20px;
   box-sizing: border-box;
-  z-index: 1000; /* (変更) 他の要素より手前に表示 */
+  z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  /* (削除) border-radius: 80px; 全幅ヘッダーには不要なため */
 }
 
-/* (追加) ヘッダー内のh1のスタイル */
 header h1 {
   color: white;
   font-size: 24px;
   margin: 0;
 }
 
-/* (追加) ナビゲーションメニューのスタイル */
 header nav ul {
   display: flex;
   gap: 20px;
@@ -60,44 +78,28 @@ header nav a {
   transition: opacity 0.3s;
 }
 
-header nav a:hover {
+header nav a:hover,
+header nav a.active {
+  /* (修正) activeクラスにもスタイルを適用 */
   opacity: 0.8;
+  text-decoration: underline; /* (追加) アクティブなリンクを分かりやすく */
 }
 
-/* (変更) ハンバーガーメニューアイコンのスタイルは元のままと仮定 */
+/* ハンバーガーメニューアイコン (JSでの表示切替を想定) */
 header .fa-bars,
 header .fa-xmark {
+  display: none; /* (追加) デフォルトでは非表示 */
   color: white;
   font-size: 24px;
   cursor: pointer;
-  /* ハンバーガーメニューの実装に応じて表示/非表示を切り替えるスタイルが必要 */
 }
 
 /* --- ToDoコンテナ --- */
-
-.container {
-  background-color: #fff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-  box-sizing: border-box; /* (追加) paddingを含めたサイズ計算のため */
-}
-
-/* (変更) h1セレクタをh2に変更 */
-h2 {
-  text-align: center;
-  color: #4c4c4c;
-  margin-top: 0; /* (追加) 各セクションの上部マージンをリセット */
-  margin-bottom: 20px;
-}
-
-/* input-areaからtasklistまでは変更なし */
 .input-area {
   display: flex;
   margin-bottom: 20px;
 }
+
 #taskInput {
   flex-grow: 1;
   padding: 10px;
@@ -105,10 +107,12 @@ h2 {
   border-radius: 4px 0 0 4px;
   font-size: 16px;
 }
+
 #taskInput:focus {
   outline: none;
   border-color: #29a2c6;
 }
+
 #addTaskButton {
   padding: 10px 15px;
   background-color: #29a2c6;
@@ -119,14 +123,17 @@ h2 {
   font-size: 16px;
   flex-shrink: 0;
 }
+
 #addTaskButton:hover {
-  background-color: rgb(11, 94, 183);
+  background-color: #1e8bab; /* (修正) 少し明るめのホバー色に変更 */
 }
+
 .filter-area {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
 }
+
 .filter-btn {
   background-color: #f0f0f0;
   border: 1px solid #ddd;
@@ -137,61 +144,77 @@ h2 {
   cursor: pointer;
   font-size: 14px;
 }
+
 .filter-btn.active {
   background-color: #29a2c6;
   color: white;
   border-color: #29a2c6;
 }
+
 .filter-btn:hover:not(.active) {
   background-color: #e0e0e0;
 }
+
 #taskList {
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
+
 #taskList li {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 12px 0;
   border-bottom: 1px solid #eee;
   font-size: 16px;
 }
+
 #taskList li:last-child {
   border-bottom: none;
 }
+
 #taskList li .task-text {
   flex-grow: 1;
   cursor: pointer;
-  margin-left: 10px;
+  margin: 0 10px; /* (修正) 左右にマージンを持たせる */
   word-break: break-all;
 }
+
 #taskList li.completed .task-text {
   text-decoration: line-through;
   color: #aaa;
 }
+
 #taskList li input[type="checkbox"] {
-  margin-right: 10px;
+  /* (削除) margin-right: 10px; task-text側でマージンを管理 */
   cursor: pointer;
   width: 18px;
   height: 18px;
   accent-color: #29a2c6;
+  flex-shrink: 0; /* (追加) 縮まないように */
 }
+
+/* (追加) タスクボタンのコンテナ */
+.task-buttons {
+  display: flex;
+  flex-shrink: 0; /* (追加) ボタン群が縮まないように */
+}
+
 #taskList li .copy-btn {
   background-color: #ffcb18;
   color: #fff;
   border: none;
-  padding: 6px 7px;
+  padding: 6px 10px; /* (修正) パディング調整 */
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   margin-right: 6px;
-  flex-shrink: 0;
 }
+
 #taskList li .copy-btn:hover {
   background-color: #efc025;
 }
+
 #taskList li .delete-btn {
   background-color: #ff6d31;
   color: white;
@@ -200,112 +223,146 @@ h2 {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  flex-shrink: 0;
 }
+
 #taskList li .delete-btn:hover {
   background-color: #e55a23;
 }
-/* --- ToDoコンテナここまで --- */
 
 /* --- 設定セクション --- */
-
-.settings {
-  /* (変更) 他のコンテナとデザインを統一 */
-  background-color: #fff;
-  padding: 20px 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-  box-sizing: border-box;
-}
-
-/* (追加) .settings内の要素をフレックスボックスで配置 */
-.settings div {
+.setting-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* (修正) 両端に配置 */
   align-items: center;
+  padding: 10px 0; /* (追加) 上下に余白を追加 */
 }
 
-.switch-label {
-  /* (追加) ラベルのスタイル */
-  color: #4c4c4c;
+.setting-item:not(:last-child) {
+  border-bottom: 1px solid #eee; /* (追加) 区切り線 */
 }
 
-/* --- スイッチのCSS (変更なし) --- */
-.switch {
+/* (削除) .settings div {...} は .setting-item と重複するため不要 */
+/* (削除) .switch-label は通常のlabelタグで十分なため不要 */
+
+/* --- スイッチのCSS (HTML構造の変更に合わせて修正) --- */
+/*
+  HTMLを以下のように変更することを推奨します。
+  <div class="setting-item">
+    <label for="confirmSwitch">削除時に確認する</label>
+    <label class="switch">
+      <input type="checkbox" id="confirmSwitch" />
+      <span class="slider round"></span>
+    </label>
+  </div>
+  このCSSは、input[type="checkbox"]を直接スタイリングする方法に切り替えます。
+  これにより、.switchクラスの複雑なCSSが不要になります。
+*/
+input[type="checkbox"]#confirmSwitch,
+input[type="checkbox"]#addPositionSwitch {
+  appearance: none; /* ブラウザのデフォルトスタイルを無効化 */
+  -webkit-appearance: none;
   position: relative;
-  display: inline-block;
   width: 40px;
   height: 24px;
-  margin-left: 10px; /* (変更) 右マージンから左マージンへ */
-}
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   background-color: #ccc;
-  transition: 0.4s;
+  border-radius: 23px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
-.slider:before {
-  position: absolute;
+
+input[type="checkbox"]#confirmSwitch::before,
+input[type="checkbox"]#addPositionSwitch::before {
   content: "";
-  height: 17px;
-  width: 17px;
-  left: 3px;
-  bottom: 3px;
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
   background-color: white;
-  transition: 0.4s;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s;
 }
-input:checked + .slider {
+
+input[type="checkbox"]#confirmSwitch:checked,
+input[type="checkbox"]#addPositionSwitch:checked {
   background-color: #29a2c6;
 }
-input:checked + .slider:before {
+
+input[type="checkbox"]#confirmSwitch:checked::before,
+input[type="checkbox"]#addPositionSwitch:checked::before {
   transform: translateX(16px);
 }
-.slider.round {
-  border-radius: 23px;
-}
-.slider.round:before {
-  border-radius: 50%;
-}
 
-/* --- 記録セクション --- */
-
-.notes {
-  background-color: #fff; /* (変更) 他のセクションと統一 */
-  padding: 20px 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-  box-sizing: border-box;
-  text-align: left;
-}
-
+/* --- 記録(MEMOS)セクション --- */
 .notes .memos {
-  list-style-type: disc; /* (変更) リストマーカーを表示 */
-  padding-left: 20px; /* (変更) リストのインデントを調整 */
+  list-style-type: disc;
+  padding-left: 20px;
   margin: 0;
-  color: #555; /* (変更) 色を調整 */
+  color: #555;
 }
 
 .notes .memos li {
-  margin-bottom: 20px; /* (追加) リスト項目間の余白 */
+  margin-bottom: 15px; /* (修正) 少し調整 */
 }
 
+/* --- フッター --- */
 footer {
   text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 14px;
 }
 
+/* --- ユーティリティ --- */
 .hidden {
   display: none;
+}
+
+/* ドラッグ中のタスクのスタイル */
+#taskList li.dragging {
+  opacity: 0.5;
+  background: #f0f8ff;
+}
+
+/* タスクがない時のメッセージ用のスタイル */
+#taskList li.empty-message {
+  color: #888;
+  text-align: center;
+  padding: 15px;
+  list-style-type: none;
+  justify-content: center; /* (追加) 中央揃え */
+  border-bottom: none;
+}
+
+/* --- レスポンシブ対応 (モバイル表示) --- */
+@media (max-width: 768px) {
+  header nav {
+    /* ここにモバイル用のナビゲーションメニューのスタイルを記述します。 */
+    /* 例: ハンバーガーメニュークリックで表示されるドロップダウンメニューなど */
+    display: none; /* デスクトップ用ナビは非表示に */
+  }
+  header .fa-bars {
+    display: block; /* モバイルではハンバーガーアイコンを表示 */
+  }
+  /* (JSで `.nav-open` のようなクラスをbodyに付与することを想定) */
+  body.nav-open header .fa-bars {
+    display: none;
+  }
+  body.nav-open header .fa-xmark {
+    display: block;
+  }
+  body.nav-open header nav {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #29a2c6;
+    padding: 10px 0;
+  }
+  body.nav-open header nav li {
+    text-align: center;
+    padding: 10px 0;
+  }
 }

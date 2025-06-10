@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ToDoリスト</title>
+    <!-- ▼▼▼【修正】ページのタイトルを内容に合わせて変更 ▼▼▼ -->
+    <title>サイトの記録 - ToDoリスト</title>
     <link rel="icon" href="images/favicon.png" type="image/png" />
     <link
       rel="apple-touch-icon"
@@ -22,8 +23,9 @@
       <h1>ToDo</h1>
       <nav>
         <ul>
+          <!-- ▼▼▼【修正】activeクラスを現在のページに付け替え ▼▼▼ -->
           <li><a href="index.html">TOP</a></li>
-          <li><a href="memos.html">MEMOS</a></li>
+          <li><a href="memos.html" class="active">MEMOS</a></li>
           <li><a href="settings.html">SETTINGS</a></li>
         </ul>
       </nav>
@@ -35,7 +37,8 @@
       <!-- 広告 -->
       <script src="https://adm.shinobi.jp/o/aaef1b3a893c3135e409554dd18c37eb"></script>
 
-      <section class="notes">
+      <!-- ▼▼▼【修正】コンテナ要素をdivに統一 ▼▼▼ -->
+      <div class="notes">
         <h2>サイトの記録</h2>
         <ul class="memos">
           <li>6/3 コピーボタンを追加しました！</li>
@@ -51,17 +54,17 @@
           <li>
             6/6 ファビコンを微調整し、簡易サイトにもアイコンを追加しました！
           </li>
+          <li>6/10 リストの並び替え機能を実装しました！</li>
         </ul>
-      </section>
+      </div>
 
       <!-- 広告 -->
       <script src="https://adm.shinobi.jp/o/aaef1b3a893c3135e409554dd18c37eb"></script>
     </main>
 
     <footer>
-      <div>
-        <p>© 2025 Wasei Maeda</p>
-      </div>
+      <!-- ▼▼▼【修正】不要なdivを削除し、シンプルに ▼▼▼ -->
+      <p>© 2025 Wasei Maeda</p>
     </footer>
 
     <script src="script.js"></script>
