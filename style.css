@@ -209,6 +209,7 @@ header .fa-xmark {
   cursor: pointer;
   font-size: 14px;
   margin-right: 6px;
+  flex-shrink: 0; /* ★修正：ボタンが縮まないようにする */
 }
 
 #taskList li .copy-btn:hover {
@@ -223,6 +224,7 @@ header .fa-xmark {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  flex-shrink: 0; /* ★修正：ボタンが縮まないようにする */
 }
 
 #taskList li .delete-btn:hover {
@@ -365,4 +367,40 @@ footer {
     text-align: center;
     padding: 10px 0;
   }
+}
+
+/* --- 並び替え機能の改善のためのCSS --- */
+
+/* 各タスク項目の設定 */
+#taskList li {
+  display: flex; /* Flexboxで要素を横並びにする */
+  align-items: center; /* 要素を垂直方向中央に揃える */
+  gap: 8px; /* 要素間の隙間 */
+}
+
+/* タスクテキストが長くなってもレイアウトが崩れないようにする */
+#taskList .task-text {
+  flex-grow: 1; /* 残りのスペースをすべて埋める */
+  margin-right: auto; /* 右側の要素を押し出す */
+  cursor: pointer;
+}
+
+/* 並び替えハンドルのスタイル */
+.drag-handle {
+  cursor: grab; /* PCで掴めることを示すカーソル */
+  color: #aaa;
+  font-size: 1.2em;
+  padding: 0 8px;
+  /* タッチ操作時にページのスクロールを無効化する（重要） */
+  touch-action: none;
+}
+/* ドラッグ（掴んでいる）最中のカーソル */
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* ドラッグ中のリストアイテムのスタイル（既存のものを流用・強化） */
+#taskList li.dragging {
+  opacity: 0.5;
+  background: #cce5ff; /* ドラッグ中を分かりやすく色付け */
 }

@@ -68,6 +68,15 @@
         li.dataset.id = todo.id;
         li.setAttribute("draggable", "true");
         li.classList.toggle("completed", todo.completed);
+
+        // --- 変更・追加ここから ---
+        // 並び替え用のハンドルを追加
+        const handle = document.createElement("span");
+        handle.classList.add("drag-handle");
+        handle.innerHTML = "☰"; // 三本線のアイコン
+        li.appendChild(handle);
+        // --- 変更・追加ここまで ---
+
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = todo.completed;
@@ -87,6 +96,8 @@
         deleteButton.classList.add("delete-btn");
         deleteButton.textContent = "削除";
         deleteButton.addEventListener("click", () => deleteTask(todo.id));
+
+        // ハンドルを先頭に追加したので、liへの追加順を調整
         li.appendChild(checkbox);
         li.appendChild(taskText);
         li.appendChild(copyButton);
@@ -195,10 +206,30 @@
         });
       });
     }
+
+    // --- 並び替え機能のイベントリスナー ---
     const taskList = document.getElementById("taskList");
     if (taskList) {
       let draggingElm = null;
+
+      // データの並び順を更新して保存する共通関数
+      const updateOrderAndSave = () => {
+        if (draggingElm) {
+          draggingElm.classList.remove("dragging");
+        }
+        const newOrderedIds = [
+          ...taskList.querySelectorAll("li:not(.empty-message)"),
+        ].map((li) => Number(li.dataset.id));
+        todos.sort(
+          (a, b) => newOrderedIds.indexOf(a.id) - newOrderedIds.indexOf(b.id)
+        );
+        saveTasksToLocalStorage();
+        draggingElm = null;
+      };
+
+      // 1. PC向け: ドラッグ＆ドロップAPI
       taskList.addEventListener("dragstart", (e) => {
+        // --- 変更 --- ハンドル以外からのドラッグは無視するように変更（任意）
         if (e.target.nodeName === "LI") {
           draggingElm = e.target;
           e.target.classList.add("dragging");
@@ -224,17 +255,61 @@
       });
       taskList.addEventListener("dragend", () => {
         if (draggingElm) {
-          draggingElm.classList.remove("dragging");
-          const newOrderedIds = [
-            ...taskList.querySelectorAll("li:not(.empty-message)"),
-          ].map((li) => Number(li.dataset.id));
-          todos.sort(
-            (a, b) => newOrderedIds.indexOf(a.id) - newOrderedIds.indexOf(b.id)
-          );
-          saveTasksToLocalStorage();
-          draggingElm = null;
+          updateOrderAndSave(); // 共通関数を呼び出す
         }
       });
+
+      // --- 変更・追加ここから ---
+      // 2. スマホ向け: タッチイベント
+      taskList.addEventListener(
+        "touchstart",
+        (e) => {
+          // ハンドルをタッチした場合のみドラッグ開始
+          if (e.target.classList.contains("drag-handle")) {
+            e.preventDefault(); // スクロールを防止
+            draggingElm = e.target.closest("li");
+            draggingElm.classList.add("dragging");
+          }
+        },
+        { passive: false }
+      ); // preventDefaultを有効にするためpassive: falseを指定
+
+      taskList.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!draggingElm) return;
+          e.preventDefault(); // スクロールを防止
+
+          const touch = e.touches[0];
+          // 指の位置にある要素を取得
+          const target = document
+            .elementFromPoint(touch.clientX, touch.clientY)
+            ?.closest("li");
+
+          if (
+            !target ||
+            target === draggingElm ||
+            target.classList.contains("empty-message")
+          )
+            return;
+
+          const rect = target.getBoundingClientRect();
+          // 指が要素の半分より下にあるかどうかで挿入位置を判断
+          const isAfter = touch.clientY - rect.top > rect.height / 2;
+          target.parentNode.insertBefore(
+            draggingElm,
+            isAfter ? target.nextSibling : target
+          );
+        },
+        { passive: false }
+      ); // preventDefaultを有効にするためpassive: falseを指定
+
+      taskList.addEventListener("touchend", () => {
+        if (draggingElm) {
+          updateOrderAndSave(); // 共通関数を呼び出す
+        }
+      });
+      // --- 変更・追加ここまで ---
     }
   }
 
