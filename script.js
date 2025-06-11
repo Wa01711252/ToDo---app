@@ -1,5 +1,5 @@
 // =================================================================
-// ToDoリスト & サイト共通スクリプト (localStorage版)
+// .ToDoリスト & サイト共通スクリプト (localStorage版)
 // =================================================================
 (function () {
   "use strict";
@@ -184,7 +184,7 @@
       );
     }
 
-    // ToDoリスト関連のリスナー
+    // .ToDoリスト関連のリスナー
     const taskInput = document.getElementById("taskInput");
     if (taskInput) {
       taskInput.addEventListener("keypress", (event) => {
