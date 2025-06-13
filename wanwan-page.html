@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>わんわんどっとこむ</title>
+    <link
+      rel="icon"
+      href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhU4b-SEH5_S3zmmkAPmP95DyaDDD4hgRrAbLlB8Cmm651zQxEFlTPHAY6_MtrB6kX0MH2XxaBeIXXAbVkFqH4ITqJ96vxXgd5OYYs65sqijrVzN9Z9-lpc3nW31zxQy_S8kKPSF_u9I-wy/s644/dog_corgi_tricolor.png"
+    />
+    <style>
+      body {
+        display: flex;
+        z-index: 0;
+        flex-direction: column;
+        font-family: sans-serif;
+        background-color: #fffbf3;
+      }
+
+      /*
+      やりたかったけどうまくいかなかったやつ
+
+      .title,
+      .form {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 1s;
+        transform: translateX(150px);
+      }
+
+      .title-active,
+      .form-active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+      }
+
+      */
+
+      .title {
+        position: fixed;
+        z-index: 999;
+        top: 20px;
+        right: 30px;
+        color: #fff;
+        background-color: #f48b31;
+        padding-bottom: 14px;
+        height: 60px;
+        width: 250px;
+        text-align: center;
+        border: solid 4px;
+        border-color: #fff;
+        border-radius: 20px;
+        font-family: sans-serif;
+      }
+
+      .title h2 {
+        transition-duration: 0.4s;
+      }
+
+      .title h2:hover {
+        transform: rotate(3deg);
+      }
+
+      body h1 {
+        text-align: center;
+        height: 60px;
+        width: 630px;
+        color: #ef7030;
+        margin-left: 20px;
+        margin-top: 10px;
+        font-size: 40px;
+      }
+
+      .line {
+        background-color: #ef7030;
+        height: 2px;
+        width: auto;
+        margin-bottom: 40px;
+      }
+
+      .list {
+        text-align: center;
+        background-color: #ffbf3e;
+        height: auto;
+        width: 300px;
+        border: solid 2px;
+        border-color: rgb(255, 255, 255);
+        border-radius: 40px;
+        color: #fff;
+        font-size: 30px;
+        line-height: 0;
+        padding-bottom: 20px;
+        margin-left: 160px;
+        margin-bottom: 30px;
+      }
+
+      .index {
+        text-align: left;
+        font-size: 25px;
+        margin-left: 60px;
+        line-height: 40px;
+        padding-top: 10px;
+      }
+
+      .index li {
+        transition-duration: 0.2s;
+      }
+      .index li:hover {
+        transform: scale(1.1);
+      }
+
+      a {
+        color: #000000;
+      }
+
+      .index a,
+      .title a {
+        text-decoration: none;
+        color: #fff;
+      }
+
+      a:hover {
+        text-decoration: underline;
+        color: #66c2cb;
+      }
+
+      .comments {
+        text-decoration: underline dashed;
+        font-size: 14px;
+        position: relative;
+        top: 5px;
+      }
+
+      .contents {
+        background-color: #ffe2a9;
+        border: solid 1px;
+        border-color: #ffffff;
+        border-radius: 20px;
+        color: #4f4f4f;
+        padding-left: 40px;
+        padding-right: 55px;
+      }
+
+      .contents p {
+        font-size: 19px;
+        padding-left: 20px;
+        padding-bottom: 50px;
+      }
+
+      #first,
+      #chihuahua,
+      #ckcl,
+      #shiba,
+      #last {
+        color: #66c2cb;
+        font-size: 40px;
+      }
+
+      .zoom-box {
+        display: inline-block;
+        overflow: hidden;
+        border: solid 1px;
+        border-color: #ffe8ba;
+        border-radius: 100px;
+      }
+
+      .image {
+        border: solid 1px;
+        border-color: #ffe8ba;
+        border-radius: 100px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(150px);
+        display: block;
+        transition-duration: 0.5s;
+      }
+
+      .image:hover {
+        transform: scale(1.2);
+      }
+
+      .image-active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      #co {
+        text-align: center;
+      }
+
+      .form {
+        position: fixed;
+        z-index: 999;
+        right: 30px;
+        bottom: 20px;
+        padding-bottom: 10px;
+        height: auto;
+        width: 220px;
+        background-color: #f48b31;
+        color: #fff;
+        border: solid 3px;
+        border-color: #fffbf3;
+        border-radius: 20px;
+      }
+
+      #content-input {
+        margin-left: 9px;
+        width: 142px;
+        background-color: #fffbf3;
+        border: solid 2px;
+        border-color: #ef7030;
+        border-radius: 7px;
+        padding-left: 8px;
+        transition-duration: 0.5s;
+      }
+
+      #content-input:hover {
+        transform: scale(1.04);
+      }
+
+      .submit-btn {
+        cursor: pointer;
+        text-align: center;
+        color: #ef7030;
+        border: solid 2px;
+        border-color: #f48b31;
+        border-radius: 15px;
+        background-color: #fff;
+        transition-duration: 0.5s;
+      }
+
+      .submit-btn:hover {
+        background-color: #f48b31;
+        color: #fff;
+        border-color: #fff;
+      }
+
+      #output {
+        background-color: #fff;
+        color: #3b3b3b;
+        padding: 0 5px 0 8px;
+        border: solid 2px;
+        border-color: #f48b31;
+        border-radius: 8px;
+        word-break: break-all;
+        font-size: 13px;
+        margin: 10px 10px 0 7px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="title">
+      <h2><a href="#">わんわんどっとこむ</a></h2>
+    </div>
+
+    <p>
+      <a href="index.html">トップに戻る</a><br />
+      ※画像はすべてフリー画像サイト<a
+        href="https://pixabay.com/"
+        target="_blank"
+        >pixabay</a
+      >から引用しています。<br />　ライセンス概要については
+      <a href="https://pixabay.com/ja/service/license-summary/" target="_blank"
+        >こちら</a
+      ><br />　(ファビコンには<a
+        href="https://www.irasutoya.com/"
+        target="_blank"
+        >いらすとや</a
+      >の画像を使用しています)
+    </p>
+
+    <h1>厳選！「おすすめの犬種３選」</h1>
+    <div class="line"></div>
+
+    <div class="list">
+      <p>------目次------</p>
+      <ul class="index">
+        <li><a href="#first">はじめに</a></li>
+        <li><a href="#chihuahua">チワワ</a></li>
+        <li><a href="#ckcl">キャバリア</a></li>
+        <li><a href="#shiba">柴犬</a></li>
+        <li><a href="#last">最後に</a></li>
+      </ul>
+      <p>-----------------</p>
+      <p class="comments">※目次をクリックして移動できます</p>
+    </div>
+
+    <div class="contents">
+      <h2 id="first">はじめに</h2>
+      <p>
+        　犬は、古代から人間と生活をともにしてきた人類のパートナーです。犬には様々な種類が存在していて、個性豊かな特徴を持っています。
+        人の腕に収まるサイズの子がいれば、人より大きい子もいます。毛色や柄も大きく異なります。
+        見た目に限らず、人間と同じく性格も様々ですが、犬種によって傾向がある場合も多くあります。
+        今回は、そんな数多の犬種から、私が個人的に、生活をともにするパートナーとしておすすめする犬種を３種類、ご紹介していきます。
+        （これは犬種による優劣等を決めたり、個性を断定したりするものではありません。あくまで人間にとって飼いやすい、現代で人気な犬種を紹介するものであることにご留意ください。）
+      </p>
+
+      <h2 id="chihuahua">1.チワワ</h2>
+      <div class="zoom-box">
+        <img
+          class="image"
+          src="https://cdn.pixabay.com/photo/2016/12/28/16/25/chihuahua-1936395_1280.jpg"
+          height="400px"
+        />
+      </div>
+      <!--チワワ写真-->
+      <p>
+        　チワワは、数ある犬種の中でもペットとして不動の人気を保ち続けています。メキシコ出身の超小型犬で、献身的で甘えん坊な子が多い傾向にあります。
+        ただし、これは超小型犬によくみられる傾向ですが、警戒心が強く、勇敢な一面も持ち合わせています。
+        好奇心旺盛なぶん、飼い主がしっかりと見守り、しつけをすることでよいパートナーとして関係を築いてくれるでしょう。
+        見た目は大きくロングとスムースの二種類に分けられ、タンの色合いや模様によってさまざまな個性を持っています。
+        また、年二回の換毛期には、ある程度の抜け毛が予想されるため、獣アレルギーの方は注意が必要です。
+      </p>
+
+      <h2 id="ckcl">2.キャバリア</h2>
+      <div class="zoom-box">
+        <img
+          class="image"
+          src="https://cdn.pixabay.com/photo/2015/06/12/12/34/dog-806883_1280.jpg"
+          height="400px"
+        />
+      </div>
+      <!--キャバリア写真-->
+      <p>
+        　キャバリアは、近年急速に人気が上昇している犬種です。イギリス出身で、チワワより少し大きい小型犬に分類されます。
+        多くの場合性格は非常に穏やかで、バタバタするようなことは滅多にありません。社交的で誰にでも懐いてくれるため、攻撃性などについて頭を悩ませる飼い主はほとんどいないでしょう。
+        一方、ビビりな子も多く、飼い主のしつけによっては無駄吠えによるご近所トラブルなども発生してしまう可能性があるため、しつけの際には注意が必要です。
+        見た目はブラウンかブラックで、おなかから頭の中心にかけて白色の模様が入っていることがほとんどです。
+        チワワと同じく年二回の換毛期があり、チワワよりも抜け毛が多いため、その点への配慮は必須となってきます。
+      </p>
+
+      <h2 id="shiba">3.柴犬</h2>
+      <div class="zoom-box">
+        <img
+          class="image"
+          src="https://cdn.pixabay.com/photo/2018/01/15/11/36/shiba-inu-3083761_1280.jpg"
+          height="400px"
+        />
+      </div>
+      <!--柴犬写真-->
+      <p>
+        　柴犬は、今では世界まで人気の広がりを見せている犬種です。代表的な日本犬で、サイズでは多くの場合キャバリアと同じ小型犬に分類されます。
+        ただ、日本犬保存会の標準では犬種ではなく、個々の大きさで分類する点に注意です。独立心が強く、ツンデレな性格の子が多く、海外の人々からも愛されています。
+        しかし、これは日本犬の大きな傾向ですが、忠誠心が強い反面他者へ攻撃的な場合もあり、しつけにはある程度の経験と知識が求められます。
+        見た目はほとんどがおなかが白い茶色系の毛色で、犬にしては小さな耳とくるくるとした巻き尾がチャームポイントです。
+        柴犬は今回紹介した中でも特に換毛期の抜け毛量が多く、またダブルコートのため、より一層こまめな毛繕いをしてあげる必要があります。
+      </p>
+
+      <h2 id="last">最後に</h2>
+      <p>
+        　いかがでしたでしょうか。今回は私が個人的におすすめする犬種を三種類ほど、短くですがご紹介しました。
+        一種類だけでもこれほどの個性を持った犬が世界にはあと何百種類も存在していて、また性格や見た目も様々です。
+        ぜひ、今回ご紹介した三種類以外も調べてみてください！
+      </p>
+    </div>
+
+    <p id="co">© Wasei Maeda</p>
+
+    <p>
+      感想・コメント等<br />　とにかく作っていて楽しかったです。
+      制作する過程で最も気を付けたのは、
+      画面の縮尺を変えてもページが崩れないようにすることです。
+      fixedで絶対位置指定をして.titleが常に右上に配置されるようにしたり、
+      できるだけpaddingとmarginの使う場面をしっかりと区別して画面全体が常に整うようにしました。
+      色調の決定が難しかったです。最終的には全体をパステルカラーにして、
+      一番後ろのbody背景色を限りなく白に近い黄色にすることで全体的に整った見た目にしました。
+      border-radiusを追加することで動物の内容にふさわしい柔らかい雰囲気をページ全体に持たせました。
+      よくあるウェブページを真似して著作権表示も作ってみました。
+      テキスト自体の親要素を真ん中揃えにする方法がわかりませんでした。
+    </p>
+
+    <p style="padding-bottom: 150px">
+      感想・コメント等 No.2<br />　Javascriptを利用してフォームの入力と画像の表示に動きをつけました。
+      フォームの入力は、インプット要素からテキストデータを捕まえてきてアウトプットとしてp要素に代入し、
+      インプットが空白の場合に分岐をして、
+      アラートがそれぞれ表示されるようにしました。
+      画像は、スクロールに対するイベントリスナーを作成し、
+      スクロール量とウィンドウの高さの和が画像までの距離に達したときに発火する関数(cssクラスを追加する関数)から、
+      スクロールに対応した動的なフェードインの動きを付けました。
+      逆スクロールした際にクラスを削除して、リロードしなくても何度も動きを見れるようにしました。
+      また、様々な箇所にホバークラスを指定してできるだけ動きのあるページにしました。
+      画像のスタイルが最後に読み込まれる性質上、ウィンドウ固定の要素が後ろに埋もれてしまう問題が起きましたが、
+      Z座標の指定により解決しました。 ファビコンの追加と軽微な修正を行いました。
+    </p>
+
+    <div class="form">
+      <h4 style="text-align: left; margin-left: 10px">
+        感想をお寄せください！
+      </h4>
+
+      <form onsubmit="displayContent(); return false;">
+        <input
+          type="text"
+          name="content"
+          id="content-input"
+          placeholder="感想を入力"
+        />
+        <button type="submit" class="submit-btn">送信</button>
+      </form>
+
+      <p id="output"></p>
+    </div>
+
+    <script>
+      function displayContent() {
+        const inputText = document.getElementById("content-input").value;
+        if (inputText !== "") {
+          document.getElementById("output").textContent = inputText;
+          alert(`「${inputText}」：ご意見ありがとうございます！`);
+          document.getElementById("content-input").value = "";
+        } else {
+          alert("感想を入力してください...");
+        }
+      }
+
+      window.addEventListener("scroll", function () {
+        const scroll = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const images = document.querySelectorAll(".image");
+        images.forEach(function (image) {
+          const distanceToImage = image.offsetTop;
+          if (scroll + windowHeight > distanceToImage) {
+            image.classList.add("image-active");
+          } else {
+            image.classList.remove("image-active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
